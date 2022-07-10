@@ -1,26 +1,43 @@
-import React from "react";
-
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
+import React, {useState} from "react";
+import Lista from "./Lista.jsx"
+import {v4 as uuidv4} from 'uuid'
 
 //create your first component
 const Home = () => {
+	
+	const [toDoList, setToDoList] = useState([])
+	const [inputValue, setInputValue] = useState()
+
+	const addToDo = (input) => {
+		const newToDo = {};
+		newToDo.text = input
+		newToDo.id = uuidv4()
+		newToDo.completed = false;
+		setToDoList([...toDoList, newToDo])
+	}
+
+	const deleteTask = (id) => {
+		setToDoList(toDoList.filter((el)=> el.id !== id))
+	}
+
 	return (
-		<div className="text-center">
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
+		<div className="main">
+			<h1>todos</h1>
+			<div className="container">
+				<div className="tarjeta">
+					<input type="text" value={inputValue} onChange={(e)=>setInputValue(e.target.value)} placeholder="What needs to be done?" 
+					onKeyDown={(e)=>{
+						if(e.key === 'Enter'){
+							addToDo(e.target.value)
+							setInputValue("")
+						}}
+					}  />
+					<Lista arr={toDoList} deleteTask={deleteTask}/>
+					<p>{toDoList.length} items left</p>
+				</div>
+			</div>
 		</div>
-	);
+	)
 };
 
 export default Home;
